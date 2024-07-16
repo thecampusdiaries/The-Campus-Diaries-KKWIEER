@@ -1,0 +1,126 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+    .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+        margin-bottom: 1.5rem;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-img-top {
+        height: 200px;
+        object-fit: cover;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .post-img {
+        height: 100px;
+        width: 100%;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .post-details {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .post-details .card-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+
+    .post-details .card-body strong {
+        font-weight: bold;
+    }
+
+    .event-details {
+        text-align: center;
+    }
+
+    .event-details h5 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .event-details p {
+        font-size: 1.1rem;
+        color: #666;
+    }
+
+    .btn-view-event {
+        display: inline-block;
+        padding: 8px 16px;
+        background-color: #007bff; /* Bootstrap primary color */
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    
+</style>
+
+<div class="container mt-5">
+    <div class="card mb-4">
+        <% if (event.image && event.image.url) { %>
+            <img src="<%= event.image.url %>" class="card-img-top" alt="Event image">
+        <% } %>
+        <div class="card-body">
+            <div class="event-details">
+                <h5 class="card-title">
+                    <%= event.name %>
+                </h5>
+                <p class="card-text">
+                    <%= event.description %>
+                </p>
+                <p class="card-text">
+                    <small class="text-muted">
+                        Organized by <%= event.organizer.username %><br>
+                        Date: <%= new Date(event.date).toDateString() %>
+                    </small>
+                </p>
+                <% if (new Date(event.date) >= new Date()) { %>
+                    <a href="<%=event.regLink%>" class="btn-view-event">Register</a>
+                <%}%>
+            </div>
+            <h6 class="mt-3">Posts:</h6>
+            <div class="row">
+                <% event.posts.forEach(post => { %>
+                    <div class="col-md-4 mb-4">
+                        <div class="card post-details">
+                            <% if (post.image && post.image.url) { %>
+                                <img src="<%= post.image.url %>" class="card-img-top post-img" alt="Post image">
+                            <% } %>
+                            <div class="card-body">
+                                <strong>
+                                    <%= post.title %>
+                                </strong><br>
+                                <%= post.caption.length > 100 ? post.caption.substring(0, 100) + '...' : post.caption %><br>
+                                <a href="/posts/<%= post._id %>">Read More</a><br>
+                              
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        </div>
+    </div>
+</div>

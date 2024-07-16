@@ -1,0 +1,307 @@
+<%- layout("/layouts/boilerplate") %>
+
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .main-container {
+            padding: 20px;
+        }
+
+        .listing-card {
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .show-img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+
+        .like-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .like-btn {
+            margin-right: 10px;
+        }
+
+        .likes-icon {
+            margin-right: 5px;
+        }
+
+        .comments-section {
+            margin-top: 20px;
+            background-color: #e9ecef;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .comment-card {
+            background-color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .comment-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .comment-header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .actions-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .profile-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .replies {
+            margin-top: 10px;
+        }
+
+        .invalid-feedback {
+            color: red;
+            font-size: 12px;
+        }
+
+        .toggle-btn {
+            cursor: pointer;
+            color: #007bff;
+            text-decoration: underline;
+        }
+
+        /* Additional Styling for Header */
+        .post-header {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .post-image {
+            width: 100%;
+            border-radius: 8px;
+            height: 100%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Increase the size of the container for event and details */
+        .details-container {
+            max-width: 80%;
+            margin: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main-container">
+        <div class="row mt-3">
+            <div class="col-8 offset-2">
+                <h3 class="post-header" style="font-weight: 900;"><%= post.title %></h3>
+            </div>
+
+            <div class="card listing-card show-card col-10 offset-1 mt-3 details-container">
+                <img src="<%= post.image.url %>" class="show-img card-img-top mb-3 post-image" alt="listing img">
+                <div class="card-body">
+                    <h3 class="card-text"><i>Event: <a href="/events/<%=post.event._id%>"><%=post.event.name %></a></i></h3>
+                    <p class="card-text"><i>Organized By: <a href="/users/<%=post.owner._id%>/profile">@<%=post.owner.username %></a></i></p>
+                    <p class="card-text">"<%= post.caption %>"</p>
+
+                    <!-- like section for the main post -->
+                    <div class="like-section">
+                        <% if (currUser) { %>
+                            <!-- if user is logged in then -->
+                            <form method="POST" action="/posts/<%= post._id %>/like" class="d-inline">
+                                <!-- if he has already liked the post -->
+                                <% if (post.likedBy.includes(currUser._id)) { %>
+                                    <button type="submit" class="btn btn-outline-primary like-btn">
+                                        <i class="fa fa-heart-broken"></i> Unlike
+                                    </button>
+                                <% } else { %>
+                                    <!-- if he has not liked the post yet -->
+                                    <button type="submit" class="btn btn-outline-primary like-btn">
+                                        <i class="fa fa-heart"></i> Like
+                                    </button>
+                                <% } %>
+                            </form>
+                        <% } else { %>
+                            <a href="/users/login" class="btn btn-outline-primary like-btn">
+                                <i class="fa fa-heart"></i> Like
+                            </a>
+                        <% } %>
+                        <span class="likes-count ms-2">
+                            <i class="fa fa-heart likes-icon"></i>
+                            <%= post.likes %>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+
+            <% if (currUser && currUser._id.equals(post.owner._id)) { %>
+                <div class="btns mb-3">
+                    <a href="/posts/<%= post._id %>/edit" class="edit-btn btn btn-dark col-1 offset-3">Edit</a>
+                    <form method="POST" action="/posts/<%= post._id %>?_method=DELETE">
+                        <button class="btn btn-dark offset-6">Delete</button>
+                    </form>
+                </div>
+            <% } %>
+
+            <div class="col-8 offset-2 mb-3">
+                <hr>
+                <% if (currUser) { %>
+                    <h4>Leave a comment</h4>
+                    <form novalidate class="needs-validation" action="/posts/<%= post._id %>/comments" method="post">
+                        <div class="mb-3 mt-3">
+                            <label class="form-label" for="text">Write how are you feeling !!</label>
+                            <textarea required class="form-control" name="comment[text]" id="text" cols="50" rows="2"></textarea>
+                            <div class="invalid-feedback">Please add some comment.</div>
+                        </div>
+                        <button class="btn btn-outline-dark mt-3 mb-3">Submit</button>
+                    </form>
+                    <hr>
+                <% } %>
+
+                <% if (post.comments.length) { %>
+                    <div class="comments-section">
+                        <p><b>All Comments</b></p>
+                        <% for (let comment of post.comments) { %>
+                            <div class="card comment-card mb-3">
+                                <div class="card-body">
+                                    <!-- Displaying profile picture -->
+                                    <div class="d-flex align-items-center">
+                                        <a href="/users/<%=comment.author._id%>/profile">
+                                            <img src="<%= comment.author.profile.profileImage.url %>"
+                                                class="profile-img img-fluid rounded-circle border border-dark mt-2 ms-2"
+                                                alt="Profile Image">
+                                            <h5 class="card-title mt-3"><i>@<%= comment.author.username %></i></h5>
+                                            <!-- Display heart and user picture if post owner liked the comment -->
+                                            <% if (comment.likedBy.includes(post.owner._id)) { %>
+                                                <span class="ms-auto">
+                                                    <i class="fa fa-heart text-danger"></i>
+                                                    <img src="<%= post.owner.profile.profileImage.url %>"
+                                                        class="profile-img img-fluid rounded-circle border border-dark mt-2 ms-2 me-1"
+                                                        alt="Owner's Profile Image" style="width: 25px; height: 25px;">
+                                                </span>
+                                            <% } %>
+                                        </a>
+                                    </div>
+                                    <p class="card-text">
+                                        <%= comment.text %>
+                                    </p>
+
+                                    <!-- Actions Section for Comments -->
+                                    <div class="actions-section d-flex justify-content-between mt-3">
+                                        <!-- Like Section for Comments -->
+                                        <div class="like-section">
+                                            <% if (currUser) { %>
+                                                <!-- if user is logged in then -->
+                                                <form method="POST" action="/posts/<%= post._id %>/comments/<%= comment._id %>/like"
+                                                    class="d-inline">
+                                                    <!-- if he has already liked the post -->
+                                                    <% if (comment.likedBy.includes(currUser._id)) { %>
+                                                        <button type="submit" class="btn btn-outline-primary like-btn">
+                                                            <i class="fa fa-heart-broken"></i> Unlike
+                                                        </button>
+                                                    <% } else { %>
+                                                        <!-- if he has not liked the post yet -->
+                                                        <button type="submit" class="btn btn-outline-primary like-btn">
+                                                            <i class="fa fa-heart"></i> Like
+                                                        </button>
+                                                    <% } %>
+                                                </form>
+                                            <% } else { %>
+                                                <a href="/users/login" class="btn btn-outline-primary like-btn">
+                                                    <i class="fa fa-heart"></i> Like
+                                                </a>
+                                            <% } %>
+                                            <span class="likes-count ms-2">
+                                                <i class="fa fa-heart likes-icon"></i>
+                                                <%= comment.likes %>
+                                            </span>
+                                        </div>
+
+                                        <% if (currUser && currUser._id.equals(comment.author._id)) { %>
+                                            <div class="d-flex align-items-center">
+                                                <a href="/posts/<%= post._id %>/comments/<%= comment._id %>/edit"
+                                                    class="edit-btn btn btn-outline-dark me-2">Edit</a>
+                                                <form method="POST"
+                                                    action="/posts/<%= post._id %>/comments/<%= comment._id %>?_method=DELETE">
+                                                    <button class="btn btn-outline-danger">Delete</button>
+                                                </form>
+                                            </div>
+                                        <% } %>
+                                    </div>
+
+                                    <!-- Replies Section for Comments -->
+                                    <div class="replies">
+                                        <% if (currUser) { %>
+                                            <form action="/posts/<%= post._id %>/comments/<%= comment._id %>/reply" method="post">
+                                                <textarea required class="form-control mt-2" name="reply[text]" id="text" cols="30"
+                                                    rows="1"></textarea>
+                                                <button class="btn btn-outline-dark mt-2 mb-2">Reply</button>
+                                            </form>
+                                        <% } %>
+
+                                        <% if (comment.replies.length) { %>
+                                            <div class="mt-2">
+                                                <b>Replies:</b>
+                                                <% comment.replies.forEach(reply => { %>
+                                                    <div class="card mt-2 mb-2">
+                                                        <div class="card-body">
+                                                            <div class="d-flex align-items-center">
+                                                                <a href="/users/<%= reply.author._id %>/profile">
+                                                                    <img src="<%= reply.author.profile.profileImage.url %>"
+                                                                        class="profile-img img-fluid rounded-circle border border-dark mt-2 ms-2"
+                                                                        alt="Reply Author's Profile Image">
+                                                                    <h6 class="card-title mt-3"><i>@<%= reply.author.username %></i></h6>
+                                                                </a>
+                                                            </div>
+                                                            <p class="card-text">
+                                                                <%= reply.text %>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                <% }) %>
+                                            </div>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</body>

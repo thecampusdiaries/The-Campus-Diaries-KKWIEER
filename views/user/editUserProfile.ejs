@@ -1,0 +1,205 @@
+<% layout("/layouts/boilerplate") %>
+
+  <body>
+    <div class="container mt-5">
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="card shadow-lg animated fadeIn">
+            <div class="card-header bg-danger text-white text-center">
+              <h3 class="my-0">
+                <%= fromSignUp ? "Set Up your Profile" : "Edit your Profile" %>
+              </h3>
+            </div>
+            <div class="card-body p-4">
+              <form class="needs-validation" novalidate action="/users/<%= user._id %>/profile/edit?_method=PUT"
+                method="POST" enctype="multipart/form-data">
+                <!-- Email -->
+                <div class="mb-4">
+                  <label for="email" class="form-label">Email</label>
+                  <input type="email" class="form-control animated-input" id="email" name="user[email]"
+                    value="<%= user.email %>" required />
+                  <div class="valid-feedback">Email looks good!</div>
+                  <div class="invalid-feedback">Please provide a valid email.</div>
+                </div>
+
+                <!-- Username -->
+                <div class="mb-4">
+                  <label for="username" class="form-label">Username</label>
+                  <input type="text" class="form-control animated-input" id="username" name="user[username]"
+                    value="<%= user.username %>" required />
+                  <div class="valid-feedback">Username looks good!</div>
+                  <div class="invalid-feedback">Please provide a valid username.</div>
+                </div>
+
+                <!-- Role -->
+                <% if(fromSignUp) { %>
+                  <div class="mb-4">
+                    <label for="role" class="form-label">Role</label>
+                    <select class="form-control animated-input" id="role" name="user[role]" required>
+                      <option value="" disabled <%=!user.role ? 'selected' : '' %>>Select a role</option>
+                      <option value="admin" disabled <%=user.role==='admin' ? 'selected' : '' %>>Admin</option>
+                      <option value="organizer" <%=user.role==='organizer' ? 'selected' : '' %>>Organizer</option>
+                      <option value="student" <%=user.role==='student' ? 'selected' : '' %>>Student</option>
+                    </select>
+                    <div class="valid-feedback">Role looks good!</div>
+                    <div class="invalid-feedback">Please select a role.</div>
+                  </div>
+                  <% } %>
+
+                    <!-- Bio -->
+                    <div class="mb-4">
+                      <label for="bio" class="form-label">Bio</label>
+                      <textarea class="form-control animated-input" id="bio" name="user[profile][bio]" rows="3"
+                        required><%= user.profile.bio %></textarea>
+                      <div class="valid-feedback">Bio looks good!</div>
+                      <div class="invalid-feedback">Please provide a valid bio.</div>
+                    </div>
+
+                    <div class="row mb-4 justify-content-center">
+                      <div class="col text-center">
+                        <span>Original Image:</span>
+                        <br />
+                        <img id="original-profile-image" src="<%= imgUrl %>" alt="@<%= user.username %> Image"
+                          class="rounded-circle border border-primary profile-img" />
+                      </div>
+                      <div class="col-auto align-self-center" id="vertical-line" style="display: none;">
+                        <div class="border-left" style="height: 250px; border-left: 2px solid #000;"></div>
+                      </div>
+                      <div class="col text-center" id="new-image-container" style="display: none;">
+                        <span>New Image:</span>
+                        <br />
+                        <img id="new-profile-image" src="" alt="New Image"
+                          class="rounded-circle border border-primary profile-img" />
+                      </div>
+                    </div>
+
+                    <!-- Profile Image -->
+                    <div class="mb-4">
+                      <label for="profileImage" class="form-label">Profile Image</label>
+                      <input class="form-control animated-input" id="profileImage" name="post[image]" type="file" />
+                      <div class="valid-feedback">Profile image looks good!</div>
+                      <div class="invalid-feedback">Please provide a valid profile image.</div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="d-flex justify-content-between">
+                      <% if(!fromSignUp) { %>
+                        <a class="btn btn-outline-dark animated-btn" href="/explore">Skip</a>
+                        <% } %>
+                          <button class="btn btn-primary animated-btn" type="submit">Update Profile</button>
+                    </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.getElementById('profileImage').addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            document.getElementById('new-profile-image').src = e.target.result;
+            document.getElementById('new-image-container').style.display = 'block';
+            document.getElementById('vertical-line').style.display = 'block';
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    </script>
+
+    <style>
+      .my-0 {
+        color: #ffffff;
+      }
+
+      .card {
+        animation: fadeIn 1s ease-in-out;
+      }
+
+      .card-header {
+        animation: slideDown 1s ease-in-out;
+      }
+
+      .form-control,
+      .btn {
+        transition: all 0.3s ease;
+      }
+
+      .form-control:focus,
+      .btn:hover {
+        transform: scale(1.05);
+      }
+
+      .profile-img {
+        width: 250px;
+        height: 250px;
+        transition: transform 0.3s ease;
+      }
+
+      .profile-img:hover {
+        transform: scale(1.1);
+      }
+
+      .animated-btn {
+        transition: background-color 0.3s ease, transform 0.3s ease;
+      }
+
+      .animated-btn:hover {
+        background-color: #ff0000;
+        transform: scale(1.05);
+      }
+
+      /* @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    } */
+
+      @keyframes slideDown {
+        from {
+          transform: translateY(-50px);
+          opacity: 0;
+        }
+
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      /* Adding a slight shadow to input fields */
+      .form-control {
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .form-control:focus {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Enhancing the border and background color of buttons */
+      .btn-outline-dark {
+        border-color: #343a40;
+      }
+
+      .btn-outline-dark:hover {
+        background-color: #343a40;
+        color: #fff;
+      }
+
+      .btn-primary {
+        background-color: #ff0000;
+        border-color: #ff0000;
+      }
+
+      .btn-primary:hover {
+        background-color: #b30000;
+        border-color: #b30000;
+      }
+    </style>
+  </body>

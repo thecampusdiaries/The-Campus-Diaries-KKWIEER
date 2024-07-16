@@ -1,0 +1,164 @@
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<style>
+    .navbar {
+        background-color: #051733 !important;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 100% !important;
+    }
+
+    .navbar-nav .nav-link {
+        color: #e2dfdf !important;
+        /* White color for better contrast */
+        padding: 0.75rem 1rem;
+        position: relative;
+        text-decoration: none;
+        /* Remove default underline */
+    }
+
+    .signup-btn {
+        background-color: #ff0011;
+        color: white;
+        border-radius: 50px;
+        padding: 0.5rem 1.5rem;
+        border: 1px solid #222;
+        display: flex;
+        align-items: center;
+    }
+
+    .signup-btn:hover {
+        background-color: #ff1500;
+        color: white;
+    }
+
+    .signup-btn i {
+        display: inline;
+        margin-right: 0.5rem;
+    }
+
+    .login-btn {
+        background-color: rgb(255, 255, 255);
+        /* White color for Log In button */
+        color: #ff0011 !important;
+        /* Red text for Log In button */
+        border-radius: 50px;
+        padding: 0.5rem 1.5rem;
+        border: 1px solid #ef0010;
+        margin-left: 1.8rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .login-btn:hover {
+        background-color: #f0f0f0;
+        color: #ff0515;
+    }
+
+    .login-btn i {
+        display: inline;
+        margin-right: 0.5rem;
+    }
+
+    .profile-dropdown .profile-pic {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        margin-right: 0.5rem;
+    }
+
+    @media (max-width: 767.98px) {
+        .navbar-collapse {
+            color: red;
+            background-color: #113164 !important;
+            /* White background for the collapsed menu */
+            text-align: center;
+            /* Center the contents */
+        }
+
+        .navbar-nav {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .nav-link {
+            margin: 10px 0;
+            /* Add spacing between links */
+            width: 100%;
+            /* Make links full-width */
+            text-align: center;
+            /* Center text */
+            padding: 15px 0;
+            /* Increase padding for better touch targets */
+            border-radius: 0;
+            /* Remove border radius for full-width links */
+        }
+
+        .nav-link::after {
+            height: 0;
+            /* Remove bottom border in collapsed menu */
+        }
+
+        .signup-btn,
+        .login-btn {
+            width: 90%;
+            /* Full-width buttons in collapsed menu */
+            margin: 10px auto;
+            /* Center the buttons */
+        }
+
+        .profile-dropdown .dropdown-menu {
+            width: 90%;
+            /* Full-width dropdown menu in collapsed menu */
+            margin: 10px auto;
+            /* Center the dropdown menu */
+        }
+    }
+</style>
+
+<nav class="navbar navbar-expand-md navbar-light bg-light border-bottom sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="/explore">
+            <i class="fas fa-compass"></i>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav mr-auto">
+                <a class="nav-link" href="/explore">Explore</a>
+                <% if(currUser && currUser.role=='organizer' ) { %>
+                    <a class="nav-link" href="/events/new">Add Event</a>
+                    <a class="nav-link" href="/posts/new">Make a Post <i class="fas fa-pen-nib"></i></a>
+                    <%} else if(currUser && currUser.role == 'admin') { %>
+                        <a class="nav-link" href="/admin/approvals">Approvals</a>
+                <% } %>
+            </div>
+            <div class="navbar-nav ml-auto">
+                <% if (!currUser) { %>
+                    <a class="nav-link signup-btn" href="/users/signup"><b>Sign up</b></a>
+                    <a class="nav-link login-btn" href="/users/login"><b>Log in</b></a>
+                    <% } else { %>
+                        <div class="nav-item dropdown profile-dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <img src="<%= currUser.profile.profileImage.url %>" alt="Profile Picture"
+                                    class="profile-pic">
+                                <b>@<%= currUser.username %></b>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="/users/<%=currUser._id%>/profile">Profile</a>
+                                <a class="dropdown-item" href="/users/logout">Log out</a>
+                            </div>
+                        </div>
+                        <% } %>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- jQuery and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

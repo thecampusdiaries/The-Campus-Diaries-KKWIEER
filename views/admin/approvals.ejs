@@ -1,0 +1,41 @@
+<% layout('/layouts/boilerplate') %>
+
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Pending Organizer Approvals</h1>
+        <table class="table table-hover table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Organizer Name</th>
+                    <th scope="col" class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% unApprovedClubs.forEach(club=> { %>
+                    <tr>
+                        <td class="align-middle">
+                            <%= club.username %>
+                        </td>
+                        <td class="text-center">
+                            <button class="btn btn-success btn-sm mx-1"
+                                onclick="approveClub('<%= club._id %>')">Approve</button>
+                        </td>
+                    </tr>
+                    <% }) %>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        async function approveClub(clubId) {
+            const response = await fetch('/admin/approve-club', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ clubId })
+            });
+            if (response.ok) {
+                location.reload();
+            } else {
+                alert('Failed to approve club.');
+            }
+        }
+    </script>

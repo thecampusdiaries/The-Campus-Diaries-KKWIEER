@@ -1,0 +1,136 @@
+<%- layout("/layouts/boilerplate") %>
+
+<style>
+    body {
+        background-color: #f8f9fa; /* Light grey background */
+    }
+    .profile-image {
+        width: 150px;
+        height: 150px;
+        border: 5px solid #fff;
+        border-radius: 50%;
+    }
+    .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        background-color: #fff; /* White background for cards */
+        margin-bottom: 20px;
+    }
+    .card-header {
+        background-color: #ff4444; /* Red header background */
+        color: rgb(10, 10, 10);
+        font-weight: bold;
+        border-radius: 10px 10px 0 0;
+    }
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+    .card-text {
+        font-size: 1rem;
+        color: #6c757d; /* Grey text */
+    }
+    .btn-outline-primary {
+        color: #007bff; /* Blue outline button */
+        border-color: #007bff;
+        transition: all 0.3s ease;
+    }
+    .btn-outline-primary:hover {
+        background-color: #0056b3;
+        color: #fff;
+    }
+    .btn-success {
+        background-color: #28a745; /* Green success button */
+        border-color: #28a745;
+        transition: all 0.3s ease;
+    }
+    .btn-success:hover {
+        background-color: #218838;
+        color: #fff;
+    }
+    .btn-secondary.disabled {
+        background-color: #6c757d; /* Grey secondary button */
+        border-color: #6c757d;
+    }
+    .card-footer {
+        border-top: none;
+        background-color: transparent;
+        border-radius: 0 0 10px 10px;
+    }
+    .listing-link:hover .listing-card {
+        transform: translateY(-5px); /* Hover effect */
+        transition: transform 0.2s ease-in-out;
+    }
+    .event-details {
+        display: none; /* Hide event details initially */
+        padding: 10px;
+        margin-top: 10px;
+        background-color: #f0f0f0; /* Light grey background */
+        border-radius: 5px;
+    }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<div class="container-fluid mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <h1 class="text-center">Registration Successful!</h1>
+        <p class="text-center">Thank you, <strong>
+                @<%= username %>
+            </strong>, for registering as a organizer.</p>
+        <p class="text-center">Your account is pending approval by the admin. You will be notified once your account is
+            approved.</p>
+
+            <!-- Profile Information Section -->
+            <div class="card shadow-lg">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-lg-4 text-center">
+                            <img src="<%= user.profile.profileImage.url %>" class="rounded-circle img-fluid profile-image" alt="Profile Image">
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="container bg-light p-3 rounded">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <h5 class="card-title">Email</h5>
+                                        <p class="card-text text-muted"><%= user.email %></p>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <h5 class="card-title">Username</h5>
+                                        <p class="card-text text-muted">@<%= user.username %></p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 mb-3">
+                                        <h5 class="card-title">Bio</h5>
+                                        <p class="card-text text-muted">
+                                            <% if (user.profile.bio && user.profile.bio.trim() !== '') { %>
+                                                <%= user.profile.bio %>
+                                            <% } else { %>
+                                                <i>[unset]</i>
+                                            <% } %>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        // Toggle event details on button click
+        $('.view-details').on('click', function() {
+            $(this).closest('.card').find('.event-details').toggle();
+        });
+    });
+</script>

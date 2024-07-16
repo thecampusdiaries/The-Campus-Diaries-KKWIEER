@@ -1,0 +1,90 @@
+<% layout("/layouts/boilerplate") %>
+
+<body>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+
+        .event-container {
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .event-container:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .event-container h3 {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-weight: bold;
+        }
+
+        .add-btn {
+            background-color: #343a40;
+            border: none;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .add-btn:hover {
+            background-color: #495057;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .event-container {
+                padding: 20px;
+            }
+        }
+    </style>
+
+    <div class="row justify-content-center">
+        <div class="col-10 col-md-8 col-lg-6 my-5">
+            <div class="event-container">
+                <h3 class="text-center">Create a New Event</h3>
+                <form action="/events" method="POST" class="form-group needs-validation" novalidate>
+
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Event Name:</label>
+                        <input type="text" name="name" id="name" class="form-control"
+                            placeholder="Add the name of your event" required>
+                        <div class="valid-feedback">Name looks good!</div>
+                        <div class="invalid-feedback">Please provide a valid event name.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description:</label>
+                        <textarea name="description" id="description" class="form-control"
+                            placeholder="Add a description of your event" required></textarea>
+                        <div class="valid-feedback">Description looks good!</div>
+                        <div class="invalid-feedback">Please provide a valid description.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="date" class="form-label">Date:</label>
+                        <input type="date" name="date" id="date" class="form-control" required>
+                        <div class="valid-feedback">Date looks good!</div>
+                        <div class="invalid-feedback">Please provide a valid date.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="gform" class="form-label">Registration Link:</label>
+                        <input type="text" name="gform" id="gform" class="form-control" required>
+                        <div class="valid-feedback">Link looks good!</div>
+                        <div class="invalid-feedback">Please provide a valid link.</div>
+                    </div>
+
+                    <button class="add-btn btn btn-dark w-100" type="submit">Create Event</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>

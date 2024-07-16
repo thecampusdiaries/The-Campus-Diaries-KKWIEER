@@ -1,0 +1,154 @@
+<% layout('/layouts/boilerplate') %>
+<head>
+    <style>
+        /* CSS styles for index.ejs */
+        @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap");
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: url("https://www.yudiz.com/codepen/animation-form/banner.jpg");
+            background-size: cover;
+            background-position: center;
+            font-family: "Montserrat", sans-serif;
+        }
+
+        .form-container {
+            width: 90%; /* Adjusted width for responsiveness */
+            max-width: 600px;
+            background-color: #d0deec;
+            border-radius: 10px;
+            overflow: hidden;
+            padding: 40px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            margin-left: 30vh;
+        }
+
+        .form-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .action-button {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .action-button a {
+            display: inline-block;
+            border-radius: 10px;
+            font-family: "Avenir Next";
+            font-size: 20px;
+            padding: 10px 30px;
+            color: #fff;
+            background-color: #007bff;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .action-button a:hover {
+            background-color: #0056b3;
+        }
+
+        .form-links {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .form-links a {
+            text-decoration: none;
+            color: #007bff;
+            transition: color 0.3s ease;
+        }
+
+        .form-links a:hover {
+            color: #0056b3;
+        }
+
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: #343a40;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        .navbar {
+            background-color: #343a40;
+            overflow: hidden;
+        }
+
+        .navbar a {
+            float: left;
+            display: block;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+        }
+
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .navbar a.active {
+            background-color: #007bff;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .form-container {
+                width: 90%;
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .form-container {
+                width: 95%;
+                padding: 10px;
+                margin-left: 0vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1 class="form-title">Log In for Campus Diary</h1>
+        <form action="/users/login" method="post" class="login-form">
+            <div class="mb-3">
+                <label for="username" class="form-label">Username:</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+                <div class="valid-feedback">Username looks good!</div>
+                <div class="invalid-feedback">Please enter a valid username.</div>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password:</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+                <div class="valid-feedback">Password looks good!</div>
+                <div class="invalid-feedback">Please enter your password.</div>
+            </div>
+            <button type="submit" class="btn btn-dark">Log In</button>
+        </form>
+        <div class="action-button">
+            <a href="/auth/google">Log In with Google</a>
+        </div>
+        <div class="form-links">
+            <p>Don't have an account? <a href="/users/signup" id="signupLink">Sign Up</a></p>
+        </div>
+    </div>
+</body>

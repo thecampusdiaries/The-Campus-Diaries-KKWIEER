@@ -1,0 +1,53 @@
+<% layout("/layouts/boilerplate") %>
+
+<body>
+    <div class="container mt-5 mb-5 p-4 rounded shadow-lg">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">Create a New Post</h3>
+                        <form action="/posts" method="POST" novalidate class="needs-validation"
+                            enctype="multipart/form-data">
+
+                            <div class="mb-3">
+                                <label for="eventId" class="form-label">Select Event:</label>
+                                <select id="eventId" name="eventId" class="form-control" required>
+                                    <% events.forEach(event=> { %>
+                                    <option value="<%= event._id %>">
+                                        <%= event.name %>
+                                    </option>
+                                    <% }) %>
+                                </select>
+                                <div class="valid-feedback">Event looks good!</div>
+                                <div class="invalid-feedback">Please select a valid event.</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Title:</label>
+                                <input type="text" id="title" name="title" class="form-control"
+                                    placeholder="Enter the title" required>
+                                <div class="valid-feedback">Title looks good!</div>
+                                <div class="invalid-feedback">Please provide a valid title.</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="caption" class="form-label">Caption:</label>
+                                <textarea id="caption" name="caption" class="form-control"
+                                    placeholder="Enter the caption"></textarea>
+                                <div class="invalid-feedback">Please provide a valid caption.</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="image" class="form-label">Image File:</label>
+                                <input class="form-control" name="post[image]" type="file" required>
+                            </div>
+
+                            <button class="add-btn btn btn-dark mb-3" type="submit">Create Post</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

@@ -1,0 +1,240 @@
+<%- layout("/layouts/boilerplate") %>
+
+<style>
+    body {
+        background-color: #f8f9fa; /* Light grey background */
+    }
+    .profile-image {
+        width: 150px;
+        height: 150px;
+        border: 5px solid #fff;
+        border-radius: 50%;
+    }
+    .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        background-color: #fff; /* White background for cards */
+        margin-bottom: 20px;
+    }
+    .card-header {
+        background-color: #ff4444; /* Red header background */
+        color: rgb(10, 10, 10);
+        font-weight: bold;
+        border-radius: 10px 10px 0 0;
+    }
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+    .card-text {
+        font-size: 1rem;
+        color: #6c757d; /* Grey text */
+    }
+    .btn-outline-primary {
+        color: #007bff; /* Blue outline button */
+        border-color: #007bff;
+        transition: all 0.3s ease;
+    }
+    .btn-outline-primary:hover {
+        background-color: #0056b3;
+        color: #fff;
+    }
+    .btn-success {
+        background-color: #28a745; /* Green success button */
+        border-color: #28a745;
+        transition: all 0.3s ease;
+    }
+    .btn-success:hover {
+        background-color: #218838;
+        color: #fff;
+    }
+    .btn-secondary.disabled {
+        background-color: #6c757d; /* Grey secondary button */
+        border-color: #6c757d;
+    }
+    .card-footer {
+        border-top: none;
+        background-color: transparent;
+        border-radius: 0 0 10px 10px;
+    }
+    .listing-link:hover .listing-card {
+        transform: translateY(-5px); /* Hover effect */
+        transition: transform 0.2s ease-in-out;
+    }
+    .event-details {
+        display: none; /* Hide event details initially */
+        padding: 10px;
+        margin-top: 10px;
+        background-color: #f0f0f0; /* Light grey background */
+        border-radius: 5px;
+    }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<div class="container-fluid mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <!-- Profile Information Section -->
+            <div class="card shadow-lg">
+                <div class="card-header bg-danger text-white text-center py-4">
+                    <% if (currUser && user._id.toString() === currUser._id.toString()) { %>
+                        <h3 class="my-0">Your Profile</h3>
+                    <% } else { %>
+                        <h3 class="my-0">User Profile</h3>
+                    <% } %>
+                </div>
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-lg-4 text-center">
+                            <img src="<%= user.profile.profileImage.url %>" class="rounded-circle img-fluid profile-image" alt="Profile Image">
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="container bg-light p-3 rounded">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <h5 class="card-title">Email</h5>
+                                        <p class="card-text text-muted"><%= user.email %></p>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <h5 class="card-title">Username</h5>
+                                        <p class="card-text text-muted"><%= user.username %></p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 mb-3">
+                                        <h5 class="card-title">Bio</h5>
+                                        <p class="card-text text-muted">
+                                            <% if (user.profile.bio && user.profile.bio.trim() !== '') { %>
+                                                <%= user.profile.bio %>
+                                            <% } else { %>
+                                                <i>[unset]</i>
+                                            <% } %>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Edit and Delete buttons for the profile owner -->
+                            <% if (currUser && user._id.toString() === currUser._id.toString()) { %>
+                                <div class="mt-4 d-flex justify-content-start">
+                                    <a href="/users/<%= user._id %>/profile/edit" class="btn btn-warning mr-3" target="_blank">Edit Profile</a>
+                                    <form action="/users/<%= user._id %>/profile/?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure you want to delete your profile?');">
+                                        <button type="submit" class="btn btn-danger">Delete Profile</button>
+                                    </form>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Future Events Section -->
+            <div class="mt-5">
+                <div class="card shadow-lg">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="my-0">Future Events Organized by @<i><%= user.username %></i></h5>
+                    </div>
+                    <div class="card-body">
+                        <% for (let event of events) { %>
+                            <% if (new Date(event.date) >= new Date()) { %>
+                                <div class="card mb-4 shadow-sm">
+                                    <div class="card-header d-flex justify-content-between align-items-center bg-light">
+                                        <h5 class="card-title mb-0">Event Name: <%= event.name %></h5>
+                                        <button class="btn btn-outline-primary btn-sm view-details">View Details</button>
+                                    </div>
+                                    <div class="card-body event-details">
+                                        <p class="card-text"><%= event.description %></p>
+                                        <!-- Posts associated with the event -->
+                                        <div class="row">
+                                            <% for (let post of event.posts) { %>
+                                                <div class="col-md-4 mb-3">
+                                                    <a class="listing-link" href="/posts/<%= post._id %>" target="_blank">
+                                                        <div class="card listing-card h-100 shadow-sm">
+                                                            <img src="<%= post.image.url %>" class="card-img-top" alt="<%= post.title %>">
+                                                            <div class="card-body">
+                                                                <p class="card-text"><i><%= post.caption %></i></p>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                        <!-- Event Date -->
+                                        <p class="card-text">Date: <%= event.date.toLocaleDateString('en-US', {
+                                            year: 'numeric', month: 'long', day: 'numeric',
+                                            hour: 'numeric', minute: 'numeric', hour12: true,
+                                            timeZoneName: 'short'
+                                        }) %></p>
+                                    </div>
+                                    <div class="card-footer text-right bg-light">
+                                        <a class="btn btn-success" href="<%=event.regLink%>" target="_blank">Click here to register</a>
+                                    </div>
+                                </div>
+                            <% } %>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Past Events Section -->
+            <div class="mt-5">
+                <div class="card shadow-lg">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="my-0">Past Events Organized by @<i><%= user.username %></i></h5>
+                    </div>
+                    <div class="card-body">
+                        <% for (let event of events) { %>
+                            <% if (new Date(event.date) < new Date()) { %>
+                                <div class="card mb-4 shadow-sm">
+                                    <div class="card-header d-flex justify-content-between align-items-center bg-light">
+                                        <h5 class="card-title mb-0">Event Name: <%= event.name %></h5>
+                                        <button class="btn btn-outline-primary btn-sm view-details">View Details</button>
+                                    </div>
+                                    <div class="card-body event-details">
+                                        <p class="card-text"><%= event.description %></p>
+                                        <!-- Posts associated with the event -->
+                                        <div class="row">
+                                            <% for (let post of event.posts) { %>
+                                                <div class="col-md-4 mb-3">
+                                                    <a class="listing-link" href="/posts/<%= post._id %>" target="_blank">
+                                                        <div class="card listing-card h-100 shadow-sm">
+                                                            <img src="<%= post.image.url %>" class="card-img-top" alt="<%= post.title %>">
+                                                            <div class="card-body">
+                                                                <p class="card-text"><i><%= post.caption %></i></p>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                        <!-- Event Date -->
+                                        <p class="card-text">Date: <%= event.date.toLocaleDateString('en-US', {
+                                            year: 'numeric', month: 'long', day: 'numeric',
+                                            hour: 'numeric', minute: 'numeric', hour12: true,
+                                            timeZoneName: 'short'
+                                        }) %></p>
+                                    </div>
+                                    <div class="card-footer text-right bg-light">
+                                        <a class="btn btn-secondary disabled" href="#" target="_blank" aria-disabled="true">Event Passed</a>
+                                    </div>
+                                </div>
+                            <% } %>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        // Toggle event details on button click
+        $('.view-details').on('click', function() {
+            $(this).closest('.card').find('.event-details').toggle();
+        });
+    });
+</script>
