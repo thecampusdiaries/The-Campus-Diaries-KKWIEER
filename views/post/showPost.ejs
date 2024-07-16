@@ -251,43 +251,51 @@
                                             </span>
                                         </div>
 
-                                        <!-- Reply Button -->
-                                        <div>
-                                            <span class="toggle-btn" onclick="toggleReplyForm('<%= comment._id %>')">Reply</span>
-                                        </div>
-                                    </div>
-
-                                    <!-- Replies Section -->
-                                    <div class="replies">
-                                        <% for (let reply of comment.replies) { %>
-                                            <div class="card comment-card ms-5">
-                                                <div class="card-body">
-                                                    <div class="d-flex align-items-center">
-                                                        <a href="/users/<%=reply.author._id%>/profile">
-                                                            <img src="<%= reply.author.profile.profileImage.url %>"
-                                                                class="profile-img img-fluid rounded-circle border border-dark mt-2 ms-2"
-                                                                alt="Profile Image">
-                                                            <h5 class="card-title mt-3"><i>@<%= reply.author.username %></i></h5>
-                                                        </a>
-                                                    </div>
-                                                    <p class="card-text">
-                                                        <%= reply.text %>
-                                                    </p>
-                                                </div>
+                                        <% if (currUser && currUser._id.equals(comment.author._id)) { %>
+                                            <div class="d-flex align-items-center">
+                                                <a href="/posts/<%= post._id %>/comments/<%= comment._id %>/edit"
+                                                    class="edit-btn btn btn-outline-dark me-2">Edit</a>
+                                                <form method="POST"
+                                                    action="/posts/<%= post._id %>/comments/<%= comment._id %>?_method=DELETE">
+                                                    <button class="btn btn-outline-danger">Delete</button>
+                                                </form>
                                             </div>
                                         <% } %>
                                     </div>
 
-                                    <!-- Reply Form -->
-                                    <% if (currUser) { %>
-                                        <form id="reply-form-<%= comment._id %>" class="reply-form" style="display:none;" action="/posts/<%= post._id %>/comments/<%= comment._id %>/replies" method="post">
-                                            <div class="mb-3 mt-3">
-                                                <textarea required class="form-control" name="reply[text]" cols="50" rows="2"></textarea>
-                                                <div class="invalid-feedback">Please add some reply.</div>
+                                    <!-- Replies Section for Comments -->
+                                    <div class="replies">
+                                        <% if (currUser) { %>
+                                            <form action="/posts/<%= post._id %>/comments/<%= comment._id %>/reply" method="post">
+                                                <textarea required class="form-control mt-2" name="reply[text]" id="text" cols="30"
+                                                    rows="1"></textarea>
+                                                <button class="btn btn-outline-dark mt-2 mb-2">Reply</button>
+                                            </form>
+                                        <% } %>
+
+                                        <% if (comment.replies.length) { %>
+                                            <div class="mt-2">
+                                                <b>Replies:</b>
+                                                <% comment.replies.forEach(reply => { %>
+                                                    <div class="card mt-2 mb-2">
+                                                        <div class="card-body">
+                                                            <div class="d-flex align-items-center">
+                                                                <a href="/users/<%= reply.author._id %>/profile">
+                                                                    <img src="<%= reply.author.profile.profileImage.url %>"
+                                                                        class="profile-img img-fluid rounded-circle border border-dark mt-2 ms-2"
+                                                                        alt="Reply Author's Profile Image">
+                                                                    <h6 class="card-title mt-3"><i>@<%= reply.author.username %></i></h6>
+                                                                </a>
+                                                            </div>
+                                                            <p class="card-text">
+                                                                <%= reply.text %>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                <% }) %>
                                             </div>
-                                            <button class="btn btn-outline-dark mt-3 mb-3">Submit</button>
-                                        </form>
-                                    <% } %>
+                                        <% } %>
+                                    </div>
                                 </div>
                             </div>
                         <% } %>
@@ -296,14 +304,4 @@
             </div>
         </div>
     </div>
-    <script>
-        function toggleReplyForm(commentId) {
-            const replyForm = document.getElementById(`reply-form-${commentId}`);
-            if (replyForm.style.display === 'none') {
-                replyForm.style.display = 'block';
-            } else {
-                replyForm.style.display = 'none';
-            }
-        }
-    </script>
 </body>
