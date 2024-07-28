@@ -4,7 +4,7 @@ Welcome to **Campus Diaries**! 🌟 A dynamic web application designed to connec
 
 ## 🚀 Live Site
 
-Check out the live version of Campus Diaries here: [Campus Diaries Live]([https://the-campus-diaries-kkwieer.onrender.com](The Campus Diaries KKWIEER) 🌐
+Check out the live version of Campus Diaries here: [Campus Diaries Live](https://the-campus-diaries-kkwieer.onrender.com) 🌐
 
 ## 📖 Overview
 
